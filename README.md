@@ -50,6 +50,12 @@ Nel sito Netlify imposta:
 
 (`netlify.toml` lo imposta già automaticamente.)
 
+### Troubleshooting Netlify login (`ERR_CONNECTION_REFUSED`)
+Se vedi richieste verso `http://localhost:4000` su Netlify, imposta in Netlify:
+- `VITE_API_URL=https://api.tuodominio.com/api`
+
+Dopo il cambio, rilancia un deploy (Clear cache and deploy site).
+
 ## 4) Deploy backend (API)
 
 Netlify in questo setup ospita il frontend; il backend Express va pubblicato su un servizio server/container (Render, Railway, Fly.io, VPS Docker, ecc.).
