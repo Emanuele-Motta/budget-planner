@@ -8,42 +8,54 @@ Web app full-stack per gestione finanze personali (React + Express + Prisma + Po
 - `server`: backend Node.js/Express + TS + Prisma + JWT refresh + Zod + rate limiting.
 - `shared`: tipi condivisi.
 
-## Avvio rapido
+## Avvio locale semplificato (consigliato)
 
-1. Installa dipendenze:
+### 1) Installa dipendenze (una sola volta)
 
 ```bash
 npm install
 ```
 
-2. Copia env:
+### 2) Setup automatico ambiente locale
 
 ```bash
-cp .env.example .env
+npm run setup:local
 ```
 
-3. Avvia PostgreSQL (opzionale con Docker):
+Questo comando:
+- crea `.env` da `.env.example` se manca,
+- avvia PostgreSQL con Docker (`postgres`),
+- genera il client Prisma,
+- sincronizza lo schema DB con `prisma db push`,
+- esegue il seed categorie demo.
 
-```bash
-docker compose up -d
-```
-
-4. Prisma:
-
-```bash
-npm run prisma:generate -w server
-npm run prisma:migrate -w server -- --name init
-npm run prisma:seed -w server
-```
-
-5. Esegui client + server:
+### 3) Avvia frontend + backend
 
 ```bash
 npm run dev
 ```
 
+Oppure in un solo comando (setup + avvio):
+
+```bash
+npm run dev:local
+```
+
 - Frontend: `http://localhost:5173`
 - Backend: `http://localhost:4000`
+
+---
+
+## Modalità manuale (alternativa)
+
+```bash
+cp .env.example .env
+docker compose up -d postgres
+npm run prisma:generate -w server
+npm run prisma:push -w server
+npm run prisma:seed -w server
+npm run dev
+```
 
 ## Esempi API
 

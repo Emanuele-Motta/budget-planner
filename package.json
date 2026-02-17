@@ -2,12 +2,18 @@
   "name": "budget-planner-monorepo",
   "private": true,
   "version": "1.0.0",
-  "workspaces": ["client", "server", "shared"],
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ],
   "scripts": {
     "dev": "concurrently \"npm:dev -w server\" \"npm:dev -w client\"",
     "build": "npm run build -w shared && npm run build -w server && npm run build -w client",
     "lint": "npm run lint -w server && npm run lint -w client",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "setup:local": "bash ./scripts/setup-local.sh",
+    "dev:local": "npm run setup:local && npm run dev"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
