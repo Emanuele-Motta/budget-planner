@@ -45,7 +45,7 @@ Nel sito Netlify imposta:
 - `VITE_API_URL=https://api.tuodominio.com/api`
 
 ### Build settings
-- Build command: `npm run build -w client`
+- Build command: `npm run build`
 - Publish directory: `client/dist`
 
 (`netlify.toml` lo imposta già automaticamente.)
