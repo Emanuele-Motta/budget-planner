@@ -24,6 +24,8 @@ npm run setup:local
 
 Questo comando:
 - crea `.env` da `.env.example` se manca,
+- carica le variabili ambiente dal file `.env`,
+- crea `server/.env` con `DATABASE_URL` per compatibilità Prisma,
 - avvia PostgreSQL con Docker (`postgres`),
 - genera il client Prisma,
 - sincronizza lo schema DB con `prisma db push`,
