@@ -1,19 +1,27 @@
 import axios from 'axios';
 import { useAuthStore } from '../store/auth.store';
 
+const LOCAL_HOSTS = ['localhost', '127.0.0.1'];
+
+const isLocalUrl = (url: string) => LOCAL_HOSTS.some((host) => url.includes(host));
+const isLocalBrowserHost = () => typeof window !== 'undefined' && LOCAL_HOSTS.includes(window.location.hostname);
+
 const resolveApiBaseUrl = () => {
   const envUrl = import.meta.env.VITE_API_URL?.trim();
 
   if (envUrl) {
-    const isLocalEnv = envUrl.includes('localhost') || envUrl.includes('127.0.0.1');
-    const isLocalHost = typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname);
-
-    if (!isLocalEnv || isLocalHost) {
+    if (isLocalUrl(envUrl) && !isLocalBrowserHost()) {
+      console.warn('[api] Ignoro VITE_API_URL locale in ambiente remoto:', envUrl);
+    } else {
       return envUrl;
     }
   }
 
-  return import.meta.env.DEV ? 'http://localhost:4000/api' : '/api';
+  if (import.meta.env.DEV) {
+    return 'http://localhost:4000/api';
+  }
+
+  return '/api';
 };
 
 export const api = axios.create({

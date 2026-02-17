@@ -56,6 +56,8 @@ Se vedi richieste verso `http://localhost:4000` su Netlify, imposta in Netlify:
 
 Dopo il cambio, rilancia un deploy (Clear cache and deploy site).
 
+Se invece vedi `404` su `/api/*`, significa che il frontend è online ma il backend non è esposto sotto lo stesso dominio: configura `VITE_API_URL` verso il dominio pubblico delle API.
+
 ## 4) Deploy backend (API)
 
 Netlify in questo setup ospita il frontend; il backend Express va pubblicato su un servizio server/container (Render, Railway, Fly.io, VPS Docker, ecc.).
