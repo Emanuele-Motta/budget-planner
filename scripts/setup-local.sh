@@ -24,12 +24,17 @@ if [[ -z "${DATABASE_URL:-}" ]]; then
 fi
 
 echo "[3/6] Sync variabili Prisma in server/.env"
-cat > server/.env <<ENV
-DATABASE_URL=${DATABASE_URL}
-ENV
+{
+  echo "DATABASE_URL=${DATABASE_URL}"
+  if [[ -n "${DIRECT_URL:-}" ]]; then
+    echo "DIRECT_URL=${DIRECT_URL}"
+  fi
+} > server/.env
 
-echo "[4/6] Avvio PostgreSQL con Docker Compose (se disponibile)"
-if command -v docker >/dev/null 2>&1; then
+echo "[4/6] Avvio PostgreSQL locale (solo se non usi Supabase)"
+if [[ "${DATABASE_URL}" == *"supabase"* ]]; then
+  echo "Rilevato Supabase: salto avvio Docker Postgres locale"
+elif command -v docker >/dev/null 2>&1; then
   docker compose up -d postgres
 else
   echo "Docker non trovato: assicurati che PostgreSQL sia avviato manualmente."

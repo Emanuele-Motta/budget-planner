@@ -8,108 +8,84 @@ Web app full-stack per gestione finanze personali (React + Express + Prisma + Po
 - `server`: backend Node.js/Express + TS + Prisma + JWT refresh + Zod + rate limiting.
 - `shared`: tipi condivisi.
 
-## Avvio locale semplificato (consigliato)
+## Setup consigliato: Supabase DB + Netlify frontend
 
-### 1) Installa dipendenze (una sola volta)
+## 1) Database Supabase (Postgres)
+
+1. Crea un progetto su Supabase.
+2. Copia le connection string Postgres:
+   - **Pooler URL** (porta `6543`) -> `DATABASE_URL`
+   - **Direct URL** (porta `5432`) -> `DIRECT_URL`
+3. Crea `.env` da esempio e incolla i valori:
+
+```bash
+cp .env.example .env
+```
+
+## 2) Avvio locale backend + frontend
 
 ```bash
 npm install
-```
-
-### 2) Setup automatico ambiente locale
-
-```bash
 npm run setup:local
-```
-
-Questo comando:
-- crea `.env` da `.env.example` se manca,
-- carica le variabili ambiente dal file `.env`,
-- crea `server/.env` con `DATABASE_URL` per compatibilità Prisma,
-- avvia PostgreSQL con Docker (`postgres`),
-- genera il client Prisma,
-- sincronizza lo schema DB con `prisma db push`,
-- esegue il seed categorie demo.
-
-### 3) Avvia frontend + backend
-
-```bash
 npm run dev
 ```
 
-Oppure in un solo comando (setup + avvio):
+`setup:local`:
+- carica `.env`,
+- sincronizza `server/.env` per Prisma,
+- se rileva Supabase **non avvia** Postgres Docker locale,
+- esegue `prisma generate`, `prisma db push`, seed.
 
-```bash
-npm run dev:local
-```
+## 3) Deploy frontend su Netlify
 
-- Frontend: `http://localhost:5173`
-- Backend: `http://localhost:4000`
+Questa repo include `netlify.toml` già configurato per SPA.
+
+### Variabile ambiente Netlify (obbligatoria)
+Nel sito Netlify imposta:
+- `VITE_API_URL=https://api.tuodominio.com/api`
+
+### Build settings
+- Build command: `npm run build -w client`
+- Publish directory: `client/dist`
+
+(`netlify.toml` lo imposta già automaticamente.)
+
+## 4) Deploy backend (API)
+
+Netlify in questo setup ospita il frontend; il backend Express va pubblicato su un servizio server/container (Render, Railway, Fly.io, VPS Docker, ecc.).
+
+Variabili richieste backend:
+- `DATABASE_URL`
+- `DIRECT_URL` (consigliata)
+- `JWT_SECRET`
+- `JWT_REFRESH_SECRET`
+- `OPENAI_API_KEY` (opzionale)
+- `CLIENT_URL=https://<tuo-sito-netlify>.netlify.app`
+
+## 5) Verifica finale
+
+- Frontend: `https://<tuo-sito>.netlify.app`
+- API: `https://api.tuodominio.com/health`
 
 ---
 
-## Pubblicazione app (production)
+## Opzione deploy Docker completa (alternativa)
 
-Questa repo include una pipeline Docker pronta per pubblicare l'app su VPS/cloud.
-
-### Prerequisiti
-- Docker + Docker Compose installati sul server.
-- Porta `80` aperta sul firewall.
-- (Opzionale consigliato) dominio DNS che punta al server.
-
-### 1) Copia env production
+Se vuoi deployare tutto su un unico server Docker:
 
 ```bash
 cp .env.prod.example .env.prod
-```
-
-Compila i valori in `.env.prod` (password e secret forti).
-
-### 2) Build + deploy
-
-```bash
 npm run deploy:up
 ```
 
-Questo comando avvia:
-- `postgres` (database),
-- `server` (API Node/Express + Prisma),
-- `client` (Nginx che serve frontend e proxy `/api`).
-
-### 3) Verifica
+Comandi utili:
 
 ```bash
 npm run deploy:logs
-```
-
-Apri browser su:
-- `http://IP_DEL_SERVER`
-- oppure `http://tuo-dominio`
-
-### Comandi utili
-
-```bash
 npm run deploy:down
 ```
 
 ---
-
-## HTTPS (raccomandato)
-
-Per usare l'app in modo sicuro, metti davanti un reverse proxy con TLS (es. Caddy o Nginx + Certbot) oppure usa un provider che gestisce SSL automaticamente.
-
----
-
-## Modalità manuale locale (alternativa)
-
-```bash
-cp .env.example .env
-docker compose up -d postgres
-npm run prisma:generate -w server
-npm run prisma:push -w server
-npm run prisma:seed -w server
-npm run dev
-```
 
 ## Esempi API
 
@@ -140,17 +116,3 @@ npm run dev
   "tags": ["cena", "ristorante"]
 }
 ```
-
-### AI chat
-`POST /api/ai/chat`
-
-```json
-{ "question": "Come posso risparmiare di più questo mese?" }
-```
-
-## Note production
-
-- Aggiungere storage cloud per allegati ricevute.
-- Aggiungere code job/cron per sync offline e transazioni ricorrenti.
-- Configurare refresh token via cookie httpOnly.
-- Crittografia dati sensibili server-side (es. pgcrypto/KMS).
