@@ -48,7 +48,59 @@ npm run dev:local
 
 ---
 
-## Modalità manuale (alternativa)
+## Pubblicazione app (production)
+
+Questa repo include una pipeline Docker pronta per pubblicare l'app su VPS/cloud.
+
+### Prerequisiti
+- Docker + Docker Compose installati sul server.
+- Porta `80` aperta sul firewall.
+- (Opzionale consigliato) dominio DNS che punta al server.
+
+### 1) Copia env production
+
+```bash
+cp .env.prod.example .env.prod
+```
+
+Compila i valori in `.env.prod` (password e secret forti).
+
+### 2) Build + deploy
+
+```bash
+npm run deploy:up
+```
+
+Questo comando avvia:
+- `postgres` (database),
+- `server` (API Node/Express + Prisma),
+- `client` (Nginx che serve frontend e proxy `/api`).
+
+### 3) Verifica
+
+```bash
+npm run deploy:logs
+```
+
+Apri browser su:
+- `http://IP_DEL_SERVER`
+- oppure `http://tuo-dominio`
+
+### Comandi utili
+
+```bash
+npm run deploy:down
+```
+
+---
+
+## HTTPS (raccomandato)
+
+Per usare l'app in modo sicuro, metti davanti un reverse proxy con TLS (es. Caddy o Nginx + Certbot) oppure usa un provider che gestisce SSL automaticamente.
+
+---
+
+## Modalità manuale locale (alternativa)
 
 ```bash
 cp .env.example .env

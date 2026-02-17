@@ -13,7 +13,10 @@
     "lint": "npm run lint -w server && npm run lint -w client",
     "format": "prettier --write .",
     "setup:local": "bash ./scripts/setup-local.sh",
-    "dev:local": "npm run setup:local && npm run dev"
+    "dev:local": "npm run setup:local && npm run dev",
+    "deploy:up": "docker compose -f deploy-compose.prod.yml --env-file .env.prod up -d --build",
+    "deploy:down": "docker compose -f deploy-compose.prod.yml --env-file .env.prod down",
+    "deploy:logs": "docker compose -f deploy-compose.prod.yml --env-file .env.prod logs -f"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
