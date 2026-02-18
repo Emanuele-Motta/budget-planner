@@ -50,6 +50,8 @@ Nel sito Netlify imposta:
 
 (`netlify.toml` lo imposta già automaticamente.)
 
+Nota: questa repo ora include anche un redirect Netlify ` /api/* -> https://nstqamvjmhlmpjsubvhc.supabase.co/functions/v1/api/:splat `, così le chiamate `POST /api/auth/login` non vanno più in 404 sul dominio Netlify.
+
 
 ### Config rapida con i tuoi valori Supabase
 
@@ -68,7 +70,7 @@ Se vedi richieste verso `http://localhost:4000` su Netlify, imposta in Netlify:
 
 Dopo il cambio, rilancia un deploy (Clear cache and deploy site).
 
-Se invece vedi `404` su `/api/*`, significa che il frontend è online ma il backend non è esposto sotto lo stesso dominio: configura `VITE_API_URL` verso il dominio pubblico delle API.
+Se vedi ancora `404` su `/api/*`, verifica che il redirect `/api/*` in `netlify.toml` sia presente nel deploy attivo oppure imposta `VITE_API_URL` verso un backend pubblico raggiungibile.
 
 ## 4) Deploy backend (API)
 
