@@ -50,27 +50,37 @@ Nel sito Netlify imposta:
 
 (`netlify.toml` lo imposta già automaticamente.)
 
-Nota: questa repo ora include anche un redirect Netlify ` /api/* -> https://nstqamvjmhlmpjsubvhc.supabase.co/functions/v1/api/:splat `, così le chiamate `POST /api/auth/login` non vanno più in 404 sul dominio Netlify.
-
-
 ### Config rapida con i tuoi valori Supabase
 
-Se vuoi usare i valori che hai condiviso, imposta nel frontend (Netlify o `.env` client):
+I valori che hai condiviso servono per identificare il progetto Supabase:
 
 ```env
-VITE_SUPABASE_URL=https://nstqamvjmhlmpjsubvhc.supabase.co
-VITE_SUPABASE_KEY=sb_publishable_olcPVYG2CKVfA0Z6GrPSow_d0cjjRhQ
+SUPABASE_URL=https://nstqamvjmhlmpjsubvhc.supabase.co
+SUPABASE_PUBLISHABLE_KEY=sb_publishable_olcPVYG2CKVfA0Z6GrPSow_d0cjjRhQ
 ```
 
-Con questa configurazione il client userà automaticamente `https://nstqamvjmhlmpjsubvhc.supabase.co/functions/v1/api` come base URL API (fallback quando `VITE_API_URL` non è impostata).
+Per questa app però **il frontend usa il backend Express**: su Netlify devi impostare `VITE_API_URL` al tuo backend pubblico (es. Render/Railway/Fly).
 
-### Troubleshooting Netlify login (`ERR_CONNECTION_REFUSED`)
+### Troubleshooting Netlify login (`ERR_CONNECTION_REFUSED` / `404`)
 Se vedi richieste verso `http://localhost:4000` su Netlify, imposta in Netlify:
 - `VITE_API_URL=https://api.tuodominio.com/api`
 
 Dopo il cambio, rilancia un deploy (Clear cache and deploy site).
 
-Se vedi ancora `404` su `/api/*`, verifica che il redirect `/api/*` in `netlify.toml` sia presente nel deploy attivo oppure imposta `VITE_API_URL` verso un backend pubblico raggiungibile.
+Se vedi `404` su `/api/*`, significa che il backend non è raggiungibile da quel dominio: verifica URL backend e deployment backend.
+
+
+## Supabase: devo incollare SQL nel SQL Editor?
+
+No, non è necessario incollare SQL manualmente per lo schema principale.
+Questa repo usa Prisma e crea/aggiorna tabelle con:
+
+```bash
+npm run setup:local
+```
+
+`setup:local` esegue `prisma db push` + seed automaticamente.
+Usa il SQL Editor solo se vuoi query manuali/debug o policy RLS custom non gestite da Prisma.
 
 ## 4) Deploy backend (API)
 
