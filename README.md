@@ -50,6 +50,18 @@ Nel sito Netlify imposta:
 
 (`netlify.toml` lo imposta già automaticamente.)
 
+
+### Config rapida con i tuoi valori Supabase
+
+Se vuoi usare i valori che hai condiviso, imposta nel frontend (Netlify o `.env` client):
+
+```env
+VITE_SUPABASE_URL=https://nstqamvjmhlmpjsubvhc.supabase.co
+VITE_SUPABASE_KEY=sb_publishable_olcPVYG2CKVfA0Z6GrPSow_d0cjjRhQ
+```
+
+Con questa configurazione il client userà automaticamente `https://nstqamvjmhlmpjsubvhc.supabase.co/functions/v1/api` come base URL API (fallback quando `VITE_API_URL` non è impostata).
+
 ### Troubleshooting Netlify login (`ERR_CONNECTION_REFUSED`)
 Se vedi richieste verso `http://localhost:4000` su Netlify, imposta in Netlify:
 - `VITE_API_URL=https://api.tuodominio.com/api`
